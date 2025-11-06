@@ -1,0 +1,63 @@
+{% extends 'gestion/base.html' %}
+
+{% block title %}Consulta de Expediente{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <!-- INICIO: Formulario de Búsqueda -->
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h2 class="h4 mb-0">Consulta el Estado de tu Trámite</h2>
+            </div>
+            <div class="card-body">
+                <p>Ingresa el número de expediente que se te proporcionó al registrar tu documento.</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control form-control-lg" name="expediente_id" value="{{ query }}" placeholder="Ej: EXP-2025-001" required>
+                        <button class="btn btn-primary" type="submit">Consultar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- FIN: Formulario de Búsqueda -->
+
+        <!-- INICIO: Resultados -->
+        {% if documento %}
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-success text-white">
+                    <h3 class="h5 mb-0">Resultados de la Búsqueda</h3>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">N° de Expediente:</dt>
+                        <dd class="col-sm-8">{{ documento.expediente_id }}</dd>
+
+                        <dt class="col-sm-4">Asunto:</dt>
+                        <dd class="col-sm-8">{{ documento.asunto }}</dd>
+
+                        <dt class="col-sm-4">Estado Actual:</dt>
+                        <dd class="col-sm-8"><span class="badge bg-primary fs-6">{{ documento.get_estado_display }}</span></dd>
+
+                        <dt class="col-sm-4">Ubicación Actual:</dt>
+                        <dd class="col-sm-8">
+                            {% if documento.responsable_actual %}
+                                {{ documento.responsable_actual.unidad_organizativa }}
+                            {% else %}
+                                Sin asignar
+                            {% endif %}
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        {% elif error %}
+            <div class="alert alert-danger mt-4">
+                {{ error }}
+            </div>
+        {% endif %}
+        <!-- FIN: Resultados -->
+
+    </div>
+</div>
+{% endblock %}

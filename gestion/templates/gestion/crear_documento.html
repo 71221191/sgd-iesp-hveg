@@ -1,0 +1,28 @@
+<!-- gestion/templates/gestion/crear_documento.html -->
+
+{% extends 'gestion/base.html' %}
+
+{% block title %}
+    Registrar Nuevo Documento
+{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm">
+    <div class="card-header">
+        <h2 class="h4 mb-0">Registrar Nuevo Documento</h2>
+    </div>
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            {# Django renderizará cada campo del formulario como un párrafo. Es rápido y funcional. #}
+            {{ form.as_p }}
+
+            <div class="text-end mt-4">
+                <a href="{% url 'lista_documentos' %}" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary">Guardar Documento</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

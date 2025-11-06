@@ -1,0 +1,29 @@
+<!-- gestion/templates/gestion/editar_documento.html -->
+
+{% extends 'gestion/base.html' %}
+
+{% block title %}
+    Editando {{ documento.expediente_id }}
+{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm">
+    <div class="card-header">
+        <h2 class="h4 mb-0">Editando Documento: <span class="text-primary">{{ documento.expediente_id }}</span></h2>
+    </div>
+    <div class="card-body">
+        {# El formulario es exactamente el mismo, Django se encarga de rellenarlo #}
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            {{ form.as_p }}
+
+            <div class="text-end mt-4">
+                {# El botón cancelar ahora vuelve a la página de detalle del documento #}
+                <a href="{% url 'detalle_documento' documento.expediente_id %}" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-success">Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

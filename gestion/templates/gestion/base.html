@@ -1,0 +1,65 @@
+<!-- gestion/templates/gestion/base.html -->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Título dinámico -->
+    <title>{% block title %}SGD IESP HVEG{% endblock %}</title>
+
+    <!-- Integración de Bootstrap 5 (CSS) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <style>
+        /* Pequeños ajustes personales */
+        body {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ... (head y body como estaban) ... -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'lista_documentos' %}">SGD IESP HVEG</a>
+            
+            <!-- INICIO DE LA MODIFICACIÓN -->
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                Hola, {{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <!-- Usamos la URL de logout que Django creó automáticamente -->
+                                    <a class="dropdown-item" href="{% url 'logout' %}">Cerrar Sesión</a>
+                                </li>
+                            </ul>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+            <!-- FIN DE LA MODIFICACIÓN -->
+        </div>
+    </nav>
+
+
+    <!-- Contenedor Principal -->
+    <main class="container mt-4">
+        {% block content %}
+        {# El contenido de las páginas hijas irá aquí #}
+        {% endblock %}
+    </main>
+
+    <footer class="text-center text-muted mt-5 mb-3">
+        <p>&copy; 2025 - IESP HVEG</p>
+    </footer>
+
+    <!-- Integración de Bootstrap 5 (JavaScript) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>

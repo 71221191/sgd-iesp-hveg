@@ -1,0 +1,111 @@
+<!-- gestion/templates/gestion/listar_documentos.html -->
+
+{% extends 'gestion/base.html' %} {# Le decimos que herede de nuestra plantilla base #}
+
+{% block title %}
+    Lista de Documentos - SGD
+{% endblock %}
+
+{% block content %}
+    <div class="card shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center"> {# <-- Añade estas clases de flexbox #}
+            <h2 class="h4 mb-0">Mi Bandeja de Entrada</h2>
+            <a href="{% url 'crear_documento' %}" class="btn btn-primary">
+                + Registrar Documento
+            </a>
+        </div>
+        <div class="card-body">
+
+        <!-- INICIO: FORMULARIO DE BÚSQUEDA Y FILTROS -->
+        <form method="get" class="mb-4 p-3 border rounded bg-light">
+            <div class="row g-3 align-items-end">
+                <!-- Filtro por Término -->
+                <div class="col-md-5">
+                    <label for="q" class="form-label">Buscar por Expediente o Asunto</label>
+                    <input type="text" class="form-control" id="q" name="q" value="{{ query_actual|default:'' }}">
+                </div>
+                
+                <!-- Filtro por Tipo de Documento -->
+                <div class="col-md-3">
+                    <label for="tipo" class="form-label">Tipo de Documento</label>
+                    <select class="form-select" id="tipo" name="tipo">
+                        <option value="">Todos</option>
+                        {% for value, display in tipos_documento %}
+                            <option value="{{ value }}" {% if value == tipo_actual %}selected{% endif %}>{{ display }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Filtro por Estado -->
+                <div class="col-md-2">
+                    <label for="estado" class="form-label">Estado</label>
+                    <select class="form-select" id="estado" name="estado">
+                        <option value="">Todos</option>
+                        {% for value, display in estados_documento %}
+                            <option value="{{ value }}" {% if value == estado_actual %}selected{% endif %}>{{ display }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Botones -->
+                <div class="col-md-2">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" type="submit">Filtrar</button>
+                        <a href="{% url 'lista_documentos' %}" class="btn btn-secondary">Limpiar</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!-- FIN: FORMULARIO DE BÚSQUEDA Y FILTROS -->
+            <!-- FIN: FORMULARIO DE BÚSQUEDA -->
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">Expediente</th>
+                            <th scope="col">Tipo</th>
+                            <th scope="col">Remitente</th>
+                            <th scope="col">Asunto</th>
+                            <th scope="col">Estado</th>
+                            <th scope="col">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for doc in documentos %}
+                            <tr>
+                                <td class="fw-bold text-primary">{{ doc.expediente_id }}</td>
+                                <td>{{ doc.get_tipo_display }}</td>
+                                <td>{{ doc.remitente }}</td>
+                                <td>{{ doc.asunto }}</td>
+                                <td>
+                                    {% if doc.estado == 'recibido' %}
+                                        <span class="badge bg-primary">{{ doc.get_estado_display }}</span>
+                                    {% elif doc.estado == 'en_revision' %}
+                                        <span class="badge bg-info text-dark">{{ doc.get_estado_display }}</span>
+                                    {% elif doc.estado == 'derivado' %}
+                                        <span class="badge bg-warning text-dark">{{ doc.get_estado_display }}</span>
+                                    {% elif doc.estado == 'en_proceso' %}
+                                        <span class="badge bg-warning text-dark">{{ doc.get_estado_display }}</span>
+                                    {% elif doc.estado == 'atendido' %}
+                                        <span class="badge bg-success">{{ doc.get_estado_display }}</span>
+                                    {% elif doc.estado == 'archivado' %}
+                                        <span class="badge bg-secondary">{{ doc.get_estado_display }}</span>
+                                    {% else %}
+                                        <span class="badge bg-dark">{{ doc.get_estado_display }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'detalle_documento' doc.expediente_id %}" class="btn btn-sm btn-outline-primary">Ver Detalles</a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center">Aún no hay documentos registrados.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %} {# Aquí termina el contenido específico #}
