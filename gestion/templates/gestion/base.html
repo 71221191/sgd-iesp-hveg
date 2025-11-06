@@ -34,10 +34,20 @@
                                 Hola, {{ user.username }}
                             </a>
                             <ul class="dropdown-menu">
-                                <li>
-                                    <!-- Usamos la URL de logout que Django creó automáticamente -->
-                                    <a class="dropdown-item" href="{% url 'logout' %}">Cerrar Sesión</a>
-                                </li>
+                            <!-- --- AÑADE ESTE BLOQUE CONDICIONAL --- -->
+                                {% if user.perfilusuario.rol.nombre == "Dirección General" %}
+                                    <li><a class="dropdown-item" href="{% url 'reportes_dashboard' %}">Panel de Reportes</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                {% endif %}
+                                <!-- --- FIN DEL BLOQUE --- -->
+                                <!-- INICIO DEL CÓDIGO CORREGIDO -->
+                                <form action="{% url 'logout' %}" method="post" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="dropdown-item" style="border: none; background: none; cursor: pointer; text-align: left; padding: 0.25rem 1rem;">
+                                        Cerrar Sesión
+                                    </button>
+                                </form>
+                                <!-- FIN DEL CÓDIGO CORREGIDO -->
                             </ul>
                         </li>
                     {% endif %}

@@ -19,3 +19,6 @@ __pycache__/
 
 # Archivos de registro
 *.log
+
+/venv/
+.env

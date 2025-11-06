@@ -42,10 +42,22 @@
 
                         <dt class="col-sm-4">Ubicación Actual:</dt>
                         <dd class="col-sm-8">
-                            {% if documento.responsable_actual %}
-                                {{ documento.responsable_actual.unidad_organizativa }}
+                            {% if documento.estado == 'atendido' or documento.estado == 'archivado' %}
+                                <dt class="col-sm-4">Resultado del Trámite:</dt>
+                                <dd class="col-sm-8 text-success fw-bold">
+                                    El trámite ha sido finalizado exitosamente.
+                                </dd>
+
+                            {# Si todavía está en proceso, mostramos su ubicación actual #}
                             {% else %}
-                                Sin asignar
+                                <dt class="col-sm-4">Ubicación Actual:</dt>
+                                <dd class="col-sm-8">
+                                    {% if documento.responsable_actual %}
+                                        {{ documento.responsable_actual.unidad_organizativa }}
+                                    {% else %}
+                                        En proceso de asignación.
+                                    {% endif %}
+                                </dd>
                             {% endif %}
                         </dd>
                     </dl>

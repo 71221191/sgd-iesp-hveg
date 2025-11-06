@@ -1,0 +1,96 @@
+<!-- gestion/templates/gestion/reportes_dashboard.html -->
+{% extends 'gestion/base.html' %}
+{% load custom_filters %}
+
+{% block title %}Panel de Reportes{% endblock %}
+
+{% block content %}
+    <!-- Estadísticas Rápidas -->
+    <div class="row mb-4">
+        <div class="col-md-3"><div class="card text-center p-3 shadow-sm"><div class="fs-4 fw-bold">{{ total_documentos }}</div><div class="text-muted">Total de Documentos</div></div></div>
+        <div class="col-md-3"><div class="card text-center p-3 shadow-sm bg-warning bg-opacity-10"><div class="fs-4 fw-bold">{{ documentos_pendientes }}</div><div class="text-muted">Trámites Pendientes</div></div></div>
+        <div class="col-md-3"><div class="card text-center p-3 shadow-sm bg-success bg-opacity-10"><div class="fs-4 fw-bold">{{ documentos_finalizados }}</div><div class="text-muted">Trámites Finalizados</div></div></div>
+        <div class="col-md-3"><div class="card text-center p-3 shadow-sm"><div class="fs-4 fw-bold">{{ finalizados_mes_actual }}</div><div class="text-muted">Finalizados este Mes</div></div></div>
+    </div>
+
+    <!-- Gráfico y Tabla -->
+    <div class="card shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <!-- TÍTULO CAMBIADO -->
+            <h2 class="h4 mb-0">Distribución de Documentos por Estado</h2>
+            <a href="{% url 'exportar_csv' %}" class="btn btn-sm btn-success">Exportar Todo a Excel (CSV)</a>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <canvas id="docsPorEstadoChart"></canvas> <!-- ID DEL CANVAS CAMBIADO -->
+                </div>
+                <div class="col-md-4">
+                    <h5 class="mb-3">Datos en Detalle</h5>
+                    <!-- TABLA CAMBIADA -->
+                    <table class="table table-sm table-hover">
+                        <thead>
+                            <tr>
+                                <th>Estado del Trámite</th>
+                                <th>N° Documentos</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in docs_por_estado %}
+                            <tr>
+                                <!-- Usamos el 'estado_display_map' para mostrar el nombre correcto -->
+                                <td>{{ estado_display_map|get_item:item.estado }}</td>
+                                <td class="text-end fw-bold">{{ item.total }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="2" class="text-center">No hay documentos para mostrar.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script de Chart.js (CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- SCRIPT DEL GRÁFICO CAMBIADO -->
+    {{ chart_labels|json_script:"chartLabels" }}
+    {{ chart_data|json_script:"chartData" }}
+    <script>
+        const labels = JSON.parse(document.getElementById('chartLabels').textContent);
+        const data = JSON.parse(document.getElementById('chartData').textContent);
+
+        const ctx = document.getElementById('docsPorEstadoChart'); // USAMOS EL NUEVO ID
+
+        new Chart(ctx, {
+            type: 'doughnut', // ¡Cambiemos a un gráfico circular para variar!
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'N° de Documentos',
+                    data: data,
+                    backgroundColor: [ // Paleta de colores para el gráfico
+                        'rgba(0, 123, 255, 0.7)',
+                        'rgba(255, 193, 7, 0.7)',
+                        'rgba(40, 167, 69, 0.7)',
+                        'rgba(220, 53, 69, 0.7)',
+                        'rgba(108, 117, 125, 0.7)',
+                    ],
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                }
+            }
+        });
+    </script>
+{% endblock %}
